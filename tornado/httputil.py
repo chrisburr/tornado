@@ -38,10 +38,12 @@ from tornado.util import ObjectDict, PY3, unicode_type
 
 if PY3:
     import http.cookies as Cookie
+    from collections.abc import MutableMapping
     from http.client import responses
     from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
 else:
     import Cookie
+    from collections import MutableMapping
     from httplib import responses
     from urllib import urlencode
     from urlparse import urlparse, urlunparse, parse_qsl
@@ -105,7 +107,7 @@ class _NormalizedHeaderCache(dict):
 _normalized_headers = _NormalizedHeaderCache(1000)
 
 
-class HTTPHeaders(collections.MutableMapping):
+class HTTPHeaders(MutableMapping):
     """A dictionary that maintains ``Http-Header-Case`` for all keys.
 
     Supports multiple values per key via a pair of new methods,
