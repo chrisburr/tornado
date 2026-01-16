@@ -38,6 +38,9 @@ jobs:
       - name: Build packages
         run: pixi build --output-dir dist
 
+      - name: Install rattler-build
+        run: pixi global install rattler-build
+
       - name: Test packages
         run: |
           for pkg in dist/*.conda; do
