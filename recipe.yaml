@@ -1,0 +1,36 @@
+package:
+  name: tornado
+  version: 5.1.1+dirac.3
+
+source:
+  - path: .
+
+build:
+  number: 0
+  script:
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
+  host:
+    - pip
+    - python ${{ python }}
+    - setuptools
+  run:
+    - python ${{ python }}
+
+tests:
+  - python:
+      imports:
+        - tornado
+        - tornado.platform
+      pip_check: true
+
+about:
+  homepage: http://www.tornadoweb.org/
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Fork of tornado for DIRAC with a patch to allow for configurable iostream
+  repository: https://github.com/DIRACGrid/tornado
