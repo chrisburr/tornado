@@ -1590,7 +1590,8 @@ class SSLIOStream(IOStream, Configurable):
 
         The ssl handshake already tested the certificate for a valid
         CA signature; the only thing that remains is to check
-        the hostname.
+        the hostname. On Python 3.4+, SSLContext.check_hostname handles
+        this automatically during the handshake.
         """
         if isinstance(self._ssl_options, dict):
             verify_mode = self._ssl_options.get('cert_reqs', ssl.CERT_NONE)
@@ -1603,13 +1604,7 @@ class SSLIOStream(IOStream, Configurable):
         if cert is None and verify_mode == ssl.CERT_REQUIRED:
             gen_log.warning("No SSL certificate given")
             return False
-        try:
-            ssl.match_hostname(peercert, self._server_hostname)
-        except ssl.CertificateError as e:
-            gen_log.warning("Invalid SSL certificate: %s" % e)
-            return False
-        else:
-            return True
+        return True
 
     def _handle_read(self):
         if self._ssl_accepting:

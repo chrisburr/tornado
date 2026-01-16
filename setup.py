@@ -15,25 +15,11 @@
 
 import os
 import platform
-import ssl
 import sys
 import warnings
 
-try:
-    # Use setuptools if available, for install_requires (among other things).
-    import setuptools
-    from setuptools import setup
-except ImportError:
-    setuptools = None
-    from distutils.core import setup
-
-from distutils.core import Extension
-
-# The following code is copied from
-# https://github.com/mongodb/mongo-python-driver/blob/master/setup.py
-# to support installing without the extension on platforms where
-# no compiler is available.
-from distutils.command.build_ext import build_ext
+from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext
 
 
 class custom_build_ext(build_ext):
@@ -103,7 +89,7 @@ MacOS users should run:
 
 kwargs = {}
 
-version = "5.1.1+dirac.2"
+version = "5.1.1+dirac.3"
 
 with open('README.rst') as f:
     kwargs['long_description'] = f.read()
@@ -123,29 +109,7 @@ if (platform.python_implementation() == 'CPython' and
         kwargs['cmdclass'] = {'build_ext': custom_build_ext}
 
 
-if setuptools is not None:
-    # If setuptools is not available, you're on your own for dependencies.
-    install_requires = []
-    if sys.version_info < (3, 2):
-        install_requires.append('futures')
-    if sys.version_info < (3, 4):
-        install_requires.append('singledispatch')
-    if sys.version_info < (3, 5):
-        install_requires.append('backports_abc>=0.4')
-    kwargs['install_requires'] = install_requires
-
-    python_requires = '>= 2.7, !=3.0.*, !=3.1.*, !=3.2.*, != 3.3.*'
-    kwargs['python_requires'] = python_requires
-
-# Verify that the SSL module has all the modern upgrades. Check for several
-# names individually since they were introduced at different versions,
-# although they should all be present by Python 3.4 or 2.7.9.
-if (not hasattr(ssl, 'SSLContext') or
-        not hasattr(ssl, 'create_default_context') or
-        not hasattr(ssl, 'match_hostname')):
-    raise ImportError("Tornado requires an up-to-date SSL module. This means "
-                      "Python 2.7.9+ or 3.4+ (although some distributions have "
-                      "backported the necessary changes to older versions).")
+kwargs['python_requires'] = '>= 3.11'
 
 setup(
     name="tornado",
